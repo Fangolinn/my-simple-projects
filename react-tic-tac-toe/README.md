@@ -1,3 +1,9 @@
+# Simple tic-tac-toe in React
+
+A simple tic-tac-toe game made using React for learning purposes. There are definetely areas to improve as this was my first React project.
+
+# Next.js README
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
