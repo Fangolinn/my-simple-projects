@@ -1,5 +1,3 @@
-import { ReactNode } from "react";
-
 function Cell({ state, moveHandler }: any) {
   return (
     <button
