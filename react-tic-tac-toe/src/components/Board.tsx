@@ -3,27 +3,76 @@
 import { useEffect, useRef, useState } from "react";
 import Cell from "./Cell";
 
-class CellInfo {
+type CellInfo = {
   id: number;
   state: string;
+};
 
-  constructor(id: number, state: string) {
-    this.id = id;
-    this.state = state;
-  }
-}
-
-class WinningLineParams {
+type WinningLineParams = {
   x1: string;
   y1: string;
   x2: string;
   y2: string;
+};
 
-  constructor(x1: string, y1: string, x2: string, y2: string) {
-    this.x1 = x1;
-    this.y1 = y1;
-    this.x2 = x2;
-    this.y2 = y2;
+function checkWin(board: CellInfo[], playerSymbol: string) {
+  if (playerSymbol === "") {
+    return null;
+  }
+
+  console.log("Check win for " + playerSymbol);
+
+  if (
+    board[0].state === playerSymbol &&
+    board[1].state === playerSymbol &&
+    board[2].state === playerSymbol
+  ) {
+    return { x1: "10%", y1: "25%", x2: "90%", y2: "25%" };
+  } else if (
+    board[3].state === playerSymbol &&
+    board[4].state === playerSymbol &&
+    board[5].state === playerSymbol
+  ) {
+    return { x1: "10%", y1: "50%", x2: "90%", y2: "50%" };
+  } else if (
+    board[6].state === playerSymbol &&
+    board[7].state === playerSymbol &&
+    board[8].state === playerSymbol
+  ) {
+    return { x1: "10%", y1: "75%", x2: "90%", y2: "75%" };
+  } else if (
+    board[0].state === playerSymbol &&
+    board[3].state === playerSymbol &&
+    board[6].state === playerSymbol
+  ) {
+    return { x1: "25%", y1: "10%", x2: "25%", y2: "90%" };
+  } else if (
+    board[1].state === playerSymbol &&
+    board[4].state === playerSymbol &&
+    board[7].state === playerSymbol
+  ) {
+    return { x1: "50%", y1: "10%", x2: "50%", y2: "90%" };
+  } else if (
+    board[2].state === playerSymbol &&
+    board[5].state === playerSymbol &&
+    board[8].state === playerSymbol
+  ) {
+    return { x1: "75%", y1: "10%", x2: "75%", y2: "90%" };
+  } else if (
+    board[0].state === playerSymbol &&
+    board[4].state === playerSymbol &&
+    board[8].state === playerSymbol
+  ) {
+    return { x1: "10%", y1: "10%", x2: "90%", y2: "90%" };
+  } else if (
+    board[2].state === playerSymbol &&
+    board[4].state === playerSymbol &&
+    board[6].state === playerSymbol
+  ) {
+    return { x1: "90%", y1: "10%", x2: "10%", y2: "90%" };
+  } else {
+    console.log("No win found");
+    return null;
   }
 }
 
@@ -32,7 +81,7 @@ function getInitialBoardState() {
   const initialValue: string = "";
 
   for (let i = 0; i < 9; i++) {
-    initialState.push(new CellInfo(i, initialValue));
+    initialState.push({ id: i, state: initialValue });
   }
 
   return initialState;
@@ -57,72 +106,11 @@ function Board() {
   useEffect(() => setCurrentMove(getNextMove.next().value), []);
 
   useEffect(() => {
-    let winningLine = checkWin(previousMove);
+    let winningLine = checkWin(currentState, previousMove);
     if (winningLine != null) {
       setWin(winningLine);
     }
   }, [previousMove]);
-
-  function checkWin(playerSymbol: string) {
-    if (playerSymbol === "") {
-      return null;
-    }
-
-    console.log("Check win for " + playerSymbol);
-
-    if (
-      currentState[0].state === playerSymbol &&
-      currentState[1].state === playerSymbol &&
-      currentState[2].state === playerSymbol
-    ) {
-      return new WinningLineParams("10%", "25%", "90%", "25%");
-    } else if (
-      currentState[3].state === playerSymbol &&
-      currentState[4].state === playerSymbol &&
-      currentState[5].state === playerSymbol
-    ) {
-      return new WinningLineParams("10%", "50%", "90%", "50%");
-    } else if (
-      currentState[6].state === playerSymbol &&
-      currentState[7].state === playerSymbol &&
-      currentState[8].state === playerSymbol
-    ) {
-      return new WinningLineParams("10%", "75%", "90%", "75%");
-    } else if (
-      currentState[0].state === playerSymbol &&
-      currentState[3].state === playerSymbol &&
-      currentState[6].state === playerSymbol
-    ) {
-      return new WinningLineParams("25%", "10%", "25%", "90%");
-    } else if (
-      currentState[1].state === playerSymbol &&
-      currentState[4].state === playerSymbol &&
-      currentState[7].state === playerSymbol
-    ) {
-      return new WinningLineParams("50%", "10%", "50%", "90%");
-    } else if (
-      currentState[2].state === playerSymbol &&
-      currentState[5].state === playerSymbol &&
-      currentState[8].state === playerSymbol
-    ) {
-      return new WinningLineParams("75%", "10%", "75%", "90%");
-    } else if (
-      currentState[0].state === playerSymbol &&
-      currentState[4].state === playerSymbol &&
-      currentState[8].state === playerSymbol
-    ) {
-      return new WinningLineParams("10%", "10%", "90%", "90%");
-    } else if (
-      currentState[2].state === playerSymbol &&
-      currentState[4].state === playerSymbol &&
-      currentState[6].state === playerSymbol
-    ) {
-      return new WinningLineParams("90%", "10%", "10%", "90%");
-    } else {
-      console.log("No win found");
-      return null;
-    }
-  }
 
   function makeMove(cellId: number) {
     setCurrentState((currentState) =>
@@ -171,7 +159,7 @@ function Board() {
         {cells}
       </div>
       <span className="my-1 font-semibold">
-        {win == null
+        {win === null
           ? "Current move: " + currentMove
           : "Winner: " + previousMove}
       </span>
