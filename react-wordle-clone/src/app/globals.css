@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 200, 200, 200;
+  --background-end-rgb: 230, 230, 230;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 30, 30, 30;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background-image: linear-gradient(
+    in oklab,
+    rgb(var(--background-start-rgb)),
+    rgb(var(--background-end-rgb))
+  );
+  height: 100vh;
+}
+
+@layer base {
+  html {
+    font-size: 26px;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
