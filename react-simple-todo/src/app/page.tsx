@@ -2,12 +2,18 @@
 
 import TodoItem from "@/components/TodoItem";
 import { ToDo } from "@/types";
-import React, { FormEvent, useRef, useState } from "react";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
+import Config from "@/config.json"
 
-const testToDos: ToDo[] = [
-  { id: 4, isCompleted: false, content: "aaa" },
-  { id: 2, isCompleted: true, content: "bbb" },
-];
+function retrieveFromLocalStorage(): ToDo[]{
+  const todosJson = localStorage.getItem(Config.LOCAL_STORAGE_KEY);
+
+  if (todosJson){
+    return JSON.parse(todosJson)
+  }
+
+  return [];
+}
 
 function todosAsMap(todos: ToDo[]): Map<number, ToDo> {
   const map = new Map<number, ToDo>();
@@ -20,8 +26,10 @@ function todosAsMap(todos: ToDo[]): Map<number, ToDo> {
 }
 
 export default function Home() {
-  const [todos, setTodos] = useState<Map<number, ToDo>>(todosAsMap(testToDos));
-  const nextId = useRef(Math.max(...Array.from(todos.keys())) + 1);
+  const [todos, setTodos] = useState<Map<number, ToDo>>(todosAsMap(retrieveFromLocalStorage()));
+  const nextId = useRef(todos.size > 0 ? Math.max(...Array.from(todos.keys())) + 1 : 0);
+
+  useEffect(() => { localStorage.setItem(Config.LOCAL_STORAGE_KEY, JSON.stringify(Array.from(todos.values())))}, [todos]);
 
   function handleNewTodo(e: FormEvent<HTMLFormElement>): void {
     e.preventDefault();
